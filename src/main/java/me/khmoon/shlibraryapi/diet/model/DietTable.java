@@ -12,6 +12,7 @@ import java.util.List;
 @ToString(exclude = "dietTableMenus")
 @NoArgsConstructor
 @Entity
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"date", "menuKind"}))
 public class DietTable {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

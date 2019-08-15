@@ -26,7 +26,7 @@ public class JpaRunner implements ApplicationRunner {
     DietTable dietTable = DietTable.builder().date(LocalDate.now())
             .menuKind(MenuKind.LUNCH)
             .build();
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 0; i++) {
       DietTableMenu dietTableMenu1 = new DietTableMenu();
       dietTable.addTableMenu(dietTableMenu1);
       Menu menu = Menu.builder().name("백반" + i)
