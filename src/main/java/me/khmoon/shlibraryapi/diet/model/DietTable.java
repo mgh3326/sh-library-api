@@ -3,29 +3,33 @@ package me.khmoon.shlibraryapi.diet.model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
 @Getter
 @Setter
 @ToString(exclude = "dietTableMenus")
 @NoArgsConstructor
-public class Menu {
+@Entity
+public class DietTable {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long Id;
-  @OneToMany(mappedBy = "menu")
+  private Long id;
+  LocalDate date;
+  @OneToMany(mappedBy = "dietTable")
   private List<DietTableMenu> dietTableMenus = new ArrayList<>();
-  private String name;
+  @Enumerated(EnumType.STRING)
+  private MenuKind menuKind;
 
   @Builder
-  public Menu(String name) {
-    this.name = name;
+  public DietTable(LocalDate date, MenuKind menuKind) {
+    this.menuKind = menuKind;
+    this.date = date;
   }
 
   public void addTableMenu(DietTableMenu dietTableMenu) {
     dietTableMenus.add(dietTableMenu);
-    dietTableMenu.setMenu(this);
+    dietTableMenu.setDietTable(this);
   }
 }

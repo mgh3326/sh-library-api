@@ -3,21 +3,22 @@ package me.khmoon.shlibraryapi.diet.model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.awt.*;
 
 @Entity
 @Getter
 @Setter
-
-public class TableMenu {
+@NoArgsConstructor
+public class DietTableMenu {
 
   @Id
-  @GeneratedValue
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "TABLE_ID")
+  @JoinColumn(name = "DIET_TABLE_ID")
   @ToString.Exclude
-  private Table tables;
-  @ManyToOne(fetch = FetchType.LAZY)
+  private DietTable dietTable;
+  @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "MENU_ID")
   @ToString.Exclude
   private Menu menu;
