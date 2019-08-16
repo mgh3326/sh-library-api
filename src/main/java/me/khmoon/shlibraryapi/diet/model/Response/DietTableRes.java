@@ -19,6 +19,6 @@ public class DietTableRes {
   private Long id;
   private LocalDate date;
   private MenuKind menuKind;
-  private List<MenuReq> menus = new ArrayList<>();
+  private List<MenuReq> menuResList = new ArrayList<>();
 
 }

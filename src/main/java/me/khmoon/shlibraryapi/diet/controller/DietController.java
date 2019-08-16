@@ -1,13 +1,16 @@
 package me.khmoon.shlibraryapi.diet.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import me.khmoon.shlibraryapi.diet.model.*;
 import me.khmoon.shlibraryapi.diet.model.Request.DietReq;
 import me.khmoon.shlibraryapi.diet.model.Request.MenuReq;
 import me.khmoon.shlibraryapi.diet.model.Response.DietTableRes;
 import me.khmoon.shlibraryapi.diet.model.Respository.DietTableRepository;
+import me.khmoon.shlibraryapi.diet.service.DietService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.mvc.ControllerLinkBuilder;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
@@ -19,14 +22,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/diet")
+@Slf4j
 public class DietController {
+  @Autowired
+  DietService dietService;
 
-  @Autowired
-  ModelMapper modelMapper;
-  @Autowired
-  DietTableRepository dietTableRepository;
-  @Autowired
-  EntityManager entityManager;
 
   @PostMapping
   @Transactional
@@ -34,31 +34,16 @@ public class DietController {
     if (errors.hasErrors()) {
       return ResponseEntity.badRequest().body(errors);
     }
-    DietTable dietTable = modelMapper.map(dietReq, DietTable.class);
-    entityManager.persist(dietTable);
-    for (MenuReq menu : dietReq.getMenus()) {
-      Menu newMenu = modelMapper.map(menu, Menu.class);
-      DietTableMenu dietTableMenu = new DietTableMenu();
-
-      newMenu.addTableMenu(dietTableMenu);
-      dietTable.addTableMenu(dietTableMenu);
-      entityManager.persist(newMenu);
-      entityManager.persist(dietTableMenu);
-
+    try {
+      DietTableRes dietTableRes = dietService.createDietDB(dietReq);
+      URI createUri = ControllerLinkBuilder.linkTo(DietController.class).slash(dietTableRes.getId()).toUri();
+      return ResponseEntity.created(createUri).body(dietTableRes);
+    } catch (Exception e) {
+      log.error(e.getMessage());
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
     }
-    DietTable newDietTable = this.dietTableRepository.save(dietTable);
-    entityManager.flush();
-    entityManager.clear();
-    DietTableRes dietTableRes = modelMapper.map(newDietTable, DietTableRes.class);
-    List<MenuReq> menus = dietTableRes.getMenus();
-    for (DietTableMenu dietTableMenu : newDietTable.getDietTableMenus()) {
-      MenuReq menuReq = modelMapper.map(dietTableMenu.getMenu(), MenuReq.class);
-      menus.add(menuReq);
-    }
-    dietTableRes.setMenus(menus);
-    URI createUri = ControllerLinkBuilder.linkTo(DietController.class).slash(dietTableRes.getId()).toUri();
-    return ResponseEntity.created(createUri).body(dietTableRes);
   }
+
 
   @GetMapping
   public String Test() {
