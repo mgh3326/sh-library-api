@@ -1,7 +1,10 @@
-package me.khmoon.shlibraryapi.diet.model;
+package me.khmoon.shlibraryapi.diet.model.Response;
 
 import lombok.Getter;
 import lombok.Setter;
+import me.khmoon.shlibraryapi.diet.model.Menu;
+import me.khmoon.shlibraryapi.diet.model.MenuKind;
+import me.khmoon.shlibraryapi.diet.model.Request.MenuReq;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -14,6 +17,8 @@ import java.util.List;
 @Setter
 public class DietTableRes {
   private Long id;
-  LocalDate date;
+  private LocalDate date;
   private MenuKind menuKind;
+  private List<MenuReq> menus = new ArrayList<>();
+
 }

@@ -1,6 +1,7 @@
 package me.khmoon.shlibraryapi;
 
 import me.khmoon.shlibraryapi.diet.model.*;
+import me.khmoon.shlibraryapi.diet.model.Respository.DietTableRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
